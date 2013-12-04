@@ -17,7 +17,7 @@ var dom = htmlParser.parse('<p class=test><a href="foo.html">tag<br soup>!</>');
 $(dom).query('p.test > a br');
 ```
 
-\* Tested against [puredom](http://puredom.org/)'s [selector engine](http://puredom.org/docs/symbols/puredom.selectorEngine.html)
+\* Tested against [puredom](http://puredom.org/)'s [selector engine](http://puredom.org/docs/symbols/puredom.selectorEngine.html) *(which, coincidentally, uses htmlParser to spice up it's docs)*
 
 
 ---
