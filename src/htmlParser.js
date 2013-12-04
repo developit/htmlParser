@@ -1,8 +1,8 @@
 /** HTML DOM parser.
  *  @class
  */
-var HTMLParser = (function() {
-	/** @exports exports as HTMLParser# */
+var htmlParser = (function() {
+	/** @exports exports as htmlParser# */
 	
 	var exports = {},
 		util = {},
