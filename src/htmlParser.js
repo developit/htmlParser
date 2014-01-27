@@ -7,8 +7,7 @@ var htmlParser = (function() {
 	var exports = {},
 		util = {},
 		splitAttrsTokenizer = /([a-z0-9_\:\-]*)\s*?=\s*?(['"]?)(.*?)\2\s+/gim,
-		domParserTokenizer = /(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!\[CDATA\[)([\s\S]*?)(\]\]>))/gm, // [^]
-		splitAttrs;
+		domParserTokenizer = /(?:<(\/?)([a-zA-Z][a-zA-Z0-9\:]*)(?:\s([^>]*?))?((?:\s*\/)?)>|(<\!\-\-)([\s\S]*?)(\-\->)|(<\!\[CDATA\[)([\s\S]*?)(\]\]>))/gm;
 	
 	util.extend = function(a, b) {
 		for (var x in b) {
@@ -31,7 +30,7 @@ var htmlParser = (function() {
 	util.selfClosingTags = {img:1,br:1,hr:1,meta:1,link:1,base:1,input:1};
 	
 	util.getElementsByTagName = function(el, tag) {
-		var els=[], c=0, i, n, j;
+		var els=[], c=0, i, n;
 		if (!tag) {
 			tag = '*';
 		}
@@ -54,7 +53,7 @@ var htmlParser = (function() {
 		if (str) {
 			splitAttrsTokenizer.lastIndex = 0;
 			str = ' '+(str || '')+' ';
-			while (token=splitAttrsTokenizer.exec(str)) {
+			while ( (token=splitAttrsTokenizer.exec(str)) ) {
 				obj[token[1]] = token[3];
 			}
 		}
@@ -78,7 +77,7 @@ var htmlParser = (function() {
 	
 	function HTMLElement() {
 		this.childNodes = [];
-	};
+	}
 	util.extend(HTMLElement.prototype, {
 		nodeType : 1,
 		textContent : '',
@@ -143,7 +142,7 @@ var htmlParser = (function() {
 	
 	
 	util.blockConstructors = {
-		'<!--'	  : CommentNode,
+		'<!--' : CommentNode,
 		'<![CDATA[' : CDATASectionNode
 	};
 	
@@ -153,7 +152,7 @@ var htmlParser = (function() {
 	 *  @returns {Document}		A Node, the type corresponding to the type of the root HTML node.
 	 */
 	exports.parse = function(str) {
-		var tags, doc, parent, prev, content, token, text, i, 
+		var tags, doc, parent, prev, token, text, i, 
 			bStart, bText, bEnd, BlockConstructor, commitTextNode, tag;
 		tags = [];
 		domParserTokenizer.lastIndex = 0;
@@ -182,7 +181,7 @@ var htmlParser = (function() {
 			}
 		};
 		
-		while (token=domParserTokenizer.exec(str)) {
+		while ( (token=domParserTokenizer.exec(str)) ) {
 			bStart = token[5] || token[8];
 			bText = token[6] || token[9];
 			bEnd = token[7] || token[10];
@@ -223,8 +222,8 @@ var htmlParser = (function() {
 					}
 				});
 				tag.className = tag.attributes['class'];
-				tag.id = tag.attributes['id'];
-				tag.name = tag.attributes['name'];
+				tag.id = tag.attributes.id;
+				tag.name = tag.attributes.name;
 				commitTextNode();
 				tags.push(tag);
 				tag.parentNode.childNodes.push(tag);
