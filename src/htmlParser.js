@@ -107,6 +107,31 @@ var htmlParser = (function() {
 					return all[i];
 				}
 			}
+		},
+		appendChild : function(child) {
+			if (child.parentNode) {
+				child.parentNode.removeChild(child);
+			}
+			this.childNodes.push(child);
+		},
+		insertBefore : function(child, sibling) {
+			if (child.parentNode) {
+				child.parentNode.removeChild(child);
+			}
+			for (var i=0; i<this.childNodes.length; i++) {
+				if (this.childNodes[i]===sibling) {
+					break;
+				}
+			}
+			this.childNodes.splice(i, 0, child);
+		},
+		removeChild : function(child) {
+			for (var i=this.childNodes.length; i--; ) {
+				if (this.childNodes[i]===child) {
+					this.childNodes.splice(i, 1);
+					break;
+				}
+			}
 		}
 	});
 	exports.HTMLElement = HTMLElement;
@@ -115,6 +140,16 @@ var htmlParser = (function() {
 	util.extend(Node.prototype, {
 		toString : function(){ return this.textContent; }
 	});
+	
+	function Document(){
+		HTMLElement.call(this);
+	}
+	util.inherit(Document, HTMLElement);
+	util.extend(Document.prototype, {
+		nodeType : 9,
+		nodeName : '#document'
+	});
+	exports.Document = Document;
 	
 	function TextNode(){}
 	util.inherit(TextNode, Node);
@@ -157,11 +192,8 @@ var htmlParser = (function() {
 		tags = [];
 		domParserTokenizer.lastIndex = 0;
 		
-		parent = doc = util.extend(new HTMLElement(), {
-			nodeType : 9,
-			nodeName : '#document'
-		});
-		
+		parent = doc = new Document();
+
 		commitTextNode = function() {
 			// note: this is moved out of the loop but still uses its scope!!
 			if (parent && tags.length>0) {
